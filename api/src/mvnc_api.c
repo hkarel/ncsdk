@@ -1076,9 +1076,11 @@ ncStatus_t ncGraphAllocate(struct ncDeviceHandle_t * deviceHandle,
         }
         if (!blob_version || blob_version->length != sizeof(g->blob_version)) {
             mvLog(MVLOG_ERROR, "graph version is invalid blob_version \n");
-            if (blob_version)
-                mvLog(MVLOG_ERROR, "blob_version->length %d expecting %d\n",
-                      blob_version->length, sizeof(g->blob_version));
+            if (blob_version) {
+                unsigned int sz = sizeof(g->blob_version);
+                mvLog(MVLOG_ERROR, "blob_version->length %u expecting %u\n",
+                      blob_version->length, sz);
+            }
 
             rc = NC_MYRIAD_ERROR;
         }
@@ -1230,8 +1232,8 @@ static ncStatus_t setGraphOptionClass1(struct _graphPrivate_t *g,
                                        unsigned int dataLength)
 {
     if (dataLength < sizeof(int)) {
-        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %d",
-              sizeof(int));
+        unsigned int sz = sizeof(int);
+        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %u", sz);
         return NC_INVALID_DATA_LENGTH;
     }
     switch (option) {
@@ -1345,10 +1347,11 @@ static ncStatus_t getGraphOptionClass0(struct _graphPrivate_t *g,
          option == NC_RO_GRAPH_OUTPUT_COUNT ||
          option == NC_RO_GRAPH_OPTION_CLASS_LIMIT ||
          option == NC_RW_GRAPH_EXECUTORS_NUM) && *dataLength < sizeof(int)) {
+        unsigned int sz = sizeof(int);
         mvLog(MVLOG_ERROR,
-              "data length of data (%d) is smaller that required (%d)!\n",
-              *dataLength, sizeof(int));
-        *dataLength = sizeof(int);
+              "data length of data (%d) is smaller that required (%u)!\n",
+              *dataLength, sz);
+        *dataLength = sz;
         return NC_INVALID_DATA_LENGTH;
     }
 
@@ -1411,10 +1414,11 @@ static ncStatus_t getGraphOptionClass0(struct _graphPrivate_t *g,
         break;
     case NC_RO_GRAPH_TIME_TAKEN:
         if (*dataLength < sizeof(float) * g->nstages) {
+            unsigned int sz = sizeof(float) * g->nstages;
             mvLog(MVLOG_ERROR,
-                  "data length of output buffer (%d) is smaller that required (%d)!\n",
-                  *dataLength, sizeof(float) * g->nstages);
-            *dataLength = sizeof(float) * g->nstages;
+                  "data length of output buffer (%u) is smaller that required (%u)!\n",
+                  *dataLength, sz);
+            *dataLength = sz;
             return NC_INVALID_DATA_LENGTH;
         }
         cmd.cmd.optionCmd.id = g->id;
@@ -1518,10 +1522,11 @@ static ncStatus_t getGraphOptionClass0(struct _graphPrivate_t *g,
         }
     case NC_RO_GRAPH_NAME:
         if (*dataLength < strlen(g->name) + 1) {
+            unsigned int sz = strlen(g->name) + 1;
             mvLog(MVLOG_ERROR,
-                  "data length of output buffer (%d) is smaller that required (%d)!\n",
-                  *dataLength, strlen(g->name) + 1);
-            *dataLength = strlen(g->name) + 1;
+                  "data length of output buffer (%u) is smaller that required (%u)!\n",
+                  *dataLength, sz);
+            *dataLength = sz;
             return NC_INVALID_DATA_LENGTH;
         }
         *dataLength = strlen(g->name) + 1;
@@ -1557,10 +1562,10 @@ static ncStatus_t getGraphOptionClass1(struct _graphPrivate_t *g,
 {
     switch (option) {
     case NC_RW_GRAPH_EXECUTORS_NUM:{
-            int size = sizeof(int);
+            unsigned int size = sizeof(int);
             if (*dataLength < size) {
                 mvLog(MVLOG_ERROR,
-                      "data length of data (%d) is smaller that required (%d)!\n",
+                      "data length of data (%u) is smaller that required (%u)!\n",
                       *dataLength, size);
                 *dataLength = size;
                 return NC_INVALID_DATA_LENGTH;
@@ -1737,8 +1742,8 @@ ncStatus_t ncGlobalSetOption(int option, const void *data,
         return NC_INVALID_PARAMETERS;
     }
     if (option == NC_RW_LOG_LEVEL && dataLength < sizeof(int)) {
-        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %d",
-              sizeof(int));
+        unsigned int sz = sizeof(int);
+        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %u", sz);
         return NC_INVALID_PARAMETERS;
     }
     switch (option) {
@@ -1776,9 +1781,9 @@ ncStatus_t ncGlobalGetOption(int option, void *data, unsigned int *dataLength)
         return NC_INVALID_PARAMETERS;
     }
     if (option == NC_RW_LOG_LEVEL && *dataLength < sizeof(int)) {
-        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %d",
-              sizeof(int));
-        *dataLength = sizeof(int);
+        unsigned int sz = sizeof(int);
+        mvLog(MVLOG_ERROR, "The dataLength is smaller that required %u", sz);
+        *dataLength = sz;
         return NC_INVALID_DATA_LENGTH;
     }
     switch (option) {
@@ -1841,7 +1846,7 @@ static ncStatus_t getDeviceOptionClass0(struct _devicePrivate_t *d,
             unsigned int size = sizeof(int);
             if (*dataLength < size) {
                 mvLog(MVLOG_ERROR,
-                      "data length of output buffer (%d) is smaller that required (%d)!\n",
+                      "data length of output buffer (%u) is smaller that required (%u)!\n",
                       *dataLength, size);
                 *dataLength = size;
                 return NC_INVALID_DATA_LENGTH;
@@ -1906,10 +1911,11 @@ static ncStatus_t getDeviceOptionClass0(struct _devicePrivate_t *d,
         break;
     case NC_RO_DEVICE_NAME:
         if (*dataLength < strlen(d->dev_addr) + 1) {
+            unsigned int sz = strlen(d->dev_addr) + 1;
             mvLog(MVLOG_ERROR,
-                  "data length of output buffer (%d) is smaller that required (%d)!\n",
-                  *dataLength, d->dev_addr + 1);
-            *dataLength = strlen(d->dev_addr) + 1;
+                  "data length of output buffer (%d) is smaller that required (%u)!\n",
+                  *dataLength, sz);
+            *dataLength = sz;
             return NC_INVALID_DATA_LENGTH;
         }
         *dataLength = strlen(d->dev_addr) + 1;
@@ -1939,7 +1945,7 @@ static ncStatus_t getDeviceOptionClass0(struct _devicePrivate_t *d,
                 *(int *) data = NC_MA2480;
             } else {
                 rc = NC_INVALID_PARAMETERS;
-                mvLog(MVLOG_WARN, "Error device name is invalid %s , %s\n",
+                mvLog(MVLOG_WARN, "Error device name is invalid %s\n",
                       d->dev_addr);
                 break;
             }
@@ -2805,7 +2811,7 @@ ncStatus_t ncFifoSetOption(struct ncFifoHandle_t * fifoHandle, int option,
             unsigned int size = sizeof(int);
             if (dataLength < size) {
                 mvLog(MVLOG_ERROR,
-                      "data length of output buffer (%d) is smaller that required (%d)!\n",
+                      "data length of output buffer (%u) is smaller that required (%u)!\n",
                       dataLength, size);
                 return NC_INVALID_DATA_LENGTH;
             }
@@ -2916,7 +2922,7 @@ ncStatus_t ncFifoGetOption(struct ncFifoHandle_t * fifoHandle, int option,
             unsigned int size = sizeof(int);
             if (*dataLength < size) {
                 mvLog(MVLOG_ERROR,
-                      "data length of output buffer (%d) is smaller that required (%d)!\n",
+                      "data length of output buffer (%u) is smaller that required (%u)!\n",
                       *dataLength, size);
                 *dataLength = size;
                 return NC_INVALID_DATA_LENGTH;
@@ -3054,10 +3060,11 @@ ncStatus_t ncFifoGetOption(struct ncFifoHandle_t * fifoHandle, int option,
         break;
     case NC_RO_FIFO_NAME:
         if (*dataLength < strlen(fifoHandle->private_data->name) + 1) {
+            unsigned int sz = strlen(fifoHandle->private_data->name) + 1;
             mvLog(MVLOG_ERROR,
-                  "data length of output buffer (%d) is smaller that required (%d)!\n",
-                  *dataLength, strlen(fifoHandle->private_data->name) + 1);
-            *dataLength = strlen(fifoHandle->private_data->name) + 1;
+                  "data length of output buffer (%d) is smaller that required (%u)!\n",
+                  *dataLength, sz);
+            *dataLength = sz;
             return NC_INVALID_DATA_LENGTH;
         }
         *dataLength = strlen(fifoHandle->private_data->name) + 1;

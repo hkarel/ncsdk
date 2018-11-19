@@ -136,7 +136,7 @@ int handleIncomingEvent(xLinkEvent_t* event){
         ASSERT_X_LINK(stream);
 
         stream->localFillLevel += event->header.size;
-        mvLog(MVLOG_DEBUG,"Got write of %ld, current local fill level is %ld out of %ld %ld\n",
+        mvLog(MVLOG_DEBUG,"Got write of %u, current local fill level is %u out of %u %u\n",
             event->header.size, stream->localFillLevel, stream->readSize, stream->writeSize);
 
         buffer = allocateData(ALIGN_UP(event->header.size, __CACHE_LINE_SIZE), __CACHE_LINE_SIZE);
@@ -398,7 +398,7 @@ int releasePacketFromStream(streamDesc_t* stream, uint32_t* releasedSize)
     }
 
     stream->localFillLevel -= currPack->length;
-    mvLog(MVLOG_DEBUG,"Got release of %ld , current local fill level is %ld out of %ld %ld\n",
+    mvLog(MVLOG_DEBUG,"Got release of %u , current local fill level is %u out of %u %u\n",
         currPack->length, stream->localFillLevel, stream->readSize, stream->writeSize);
 
     deallocateData(currPack->data,
@@ -524,7 +524,8 @@ int dispatcherLocalEventGetResponse(xLinkEvent_t* event, xLinkEvent_t* response)
             event->header.flags.bitField.block = 0;
             stream->remoteFillLevel += event->header.size;
             stream->remoteFillPacketLevel++;
-            mvLog(MVLOG_DEBUG,"Got local write of %ld , remote fill level %ld out of %ld %ld\n",
+
+            mvLog(MVLOG_DEBUG,"Got local write of %u , remote fill level %u out of %u %u\n",
                 event->header.size, stream->remoteFillLevel, stream->writeSize, stream->readSize);
         }
         releaseStream(stream);
@@ -658,7 +659,7 @@ int dispatcherRemoteEventGetResponse(xLinkEvent_t* event, xLinkEvent_t* response
             stream->remoteFillLevel -= event->header.size;
             stream->remoteFillPacketLevel--;
 
-            mvLog(MVLOG_DEBUG,"Got remote release of %ld, remote fill level %ld out of %ld %ld\n",
+            mvLog(MVLOG_DEBUG,"Got remote release of %u, remote fill level %u out of %u %u\n",
                 event->header.size, stream->remoteFillLevel, stream->writeSize, stream->readSize);
             releaseStream(stream);
 
