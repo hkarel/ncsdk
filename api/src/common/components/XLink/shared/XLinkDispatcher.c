@@ -234,7 +234,8 @@ static void* eventReader(void* ctx)
     int schedulerId = *(int *)ctx;
     ASSERT_X_LINK(schedulerId < MAX_SCHEDULERS);
 
-    xLinkEvent_t event = { 0 };// to fix error C4700 in win
+    xLinkEvent_t event; //= { 0 };// to fix error C4700 in win
+    memset(&event, 0, sizeof event);
     event.header.id = -1;
     event.xLinkFD = schedulerState[schedulerId].xLinkFD;
 

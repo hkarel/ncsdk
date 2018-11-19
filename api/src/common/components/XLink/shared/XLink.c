@@ -920,7 +920,8 @@ XLinkError_t XLinkConnect(XLinkHandler_t* handler)
     }
 
     dispatcherStart(link->fd);
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = USB_PING_REQ;
     event.xLinkFD = link->fd;
     dispatcherAddEvent(EVENT_LOCAL, &event);
@@ -1003,7 +1004,8 @@ streamId_t XLinkOpenStream(linkId_t id, const char* name, int stream_write_size)
         {USB_CREATE_STREAM_REQ, USB_CREATE_STREAM_REQ, \
         PCIE_CREATE_STREAM_REQ, IPC_CREATE_STREAM_REQ};
 
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     xLinkDesc_t* link = getLinkById(id);
     mvLog(MVLOG_DEBUG,"%s() id %d link %p\n", __func__, id, link);
     ASSERT_X_LINK(link != NULL);
@@ -1054,7 +1056,8 @@ XLinkError_t XLinkCloseStream(streamId_t streamId)
     if (getXLinkState(link) != XLINK_UP)
         return X_LINK_COMMUNICATION_NOT_OPEN;
 
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = USB_CLOSE_STREAM_REQ;
     event.header.streamId = streamId;
     event.xLinkFD = link->fd;
@@ -1136,7 +1139,8 @@ XLinkError_t XLinkWriteData(streamId_t streamId, const uint8_t* buffer,
     }
     struct timespec start, end;
     clock_gettime(CLOCK_REALTIME, &start);
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = operationTypes[glHandler->protocol];
     event.header.size = size;
     event.header.streamId = streamId;
@@ -1201,7 +1205,8 @@ XLinkError_t XLinkReadData(streamId_t streamId, streamPacketDesc_t** packet)
         return X_LINK_COMMUNICATION_NOT_OPEN;
     }
 
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = operationTypes[glHandler->protocol];
     event.header.size = 0;
     event.header.streamId = streamId;
@@ -1242,7 +1247,8 @@ XLinkError_t XLinkReleaseData(streamId_t streamId)
         return X_LINK_COMMUNICATION_NOT_OPEN;
     }
 
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = USB_READ_REL_REQ;
     event.header.streamId = streamId;
     event.xLinkFD = link->fd;
@@ -1282,7 +1288,8 @@ XLinkError_t XLinkResetRemote(linkId_t id)
         XLinkPlatformResetRemote(link->fd);
         return X_LINK_COMMUNICATION_NOT_OPEN;
     }
-    xLinkEvent_t event = {0};
+    xLinkEvent_t event; // = {0};
+    memset(&event, 0, sizeof event);
     event.header.type = USB_RESET_REQ;
     event.xLinkFD = link->fd;
     mvLog(MVLOG_DEBUG,"sending reset remote event\n");
