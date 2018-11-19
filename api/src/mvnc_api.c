@@ -3093,7 +3093,7 @@ ncStatus_t ncGraphQueueInference(struct ncGraphHandle_t * graphHandle,
                                  struct ncFifoHandle_t ** fifoOut,
                                  unsigned int outFifoCount)
 {
-    mvLog(MVLOG_INFO, "trigger start\n");
+    mvLog(MVLOG_DEBUG, "trigger start\n");
     if (!graphHandle || !fifoIn || !fifoIn[0] || !fifoOut || !fifoOut[0]) {
         mvLog(MVLOG_ERROR, "Graph or fifos handles are NULL");
         return NC_INVALID_HANDLE;
@@ -3190,7 +3190,7 @@ ncStatus_t ncGraphQueueInference(struct ncGraphHandle_t * graphHandle,
     }
     pthread_mutex_unlock(&g->dev->graph_streamm);
     g->started = 1;
-    mvLog(MVLOG_INFO, "trigger end\n");
+    mvLog(MVLOG_DEBUG, "trigger end\n");
     return NC_OK;
 }
 
