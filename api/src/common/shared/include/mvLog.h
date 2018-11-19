@@ -44,46 +44,46 @@
 #include <rtems/bspIo.h>
 #endif
 
- // Windows-only
-#if (defined (WINNT) || defined(_WIN32) || defined(_WIN64) )
-#define __attribute__(x)
-#endif
+// // Windows-only
+//#if (defined (WINNT) || defined(_WIN32) || defined(_WIN64) )
+//#define __attribute__(x)
+//#endif
 
-#ifndef MVLOG_UNIT_NAME
-#define MVLOG_UNIT_NAME global
-#endif
+//#ifndef MVLOG_UNIT_NAME
+//#define MVLOG_UNIT_NAME global
+//#endif
 
-#define _MVLOGLEVEL(UNIT_NAME)  mvLogLevel_ ## UNIT_NAME
-#define  MVLOGLEVEL(UNIT_NAME) _MVLOGLEVEL(UNIT_NAME)
+//#define _MVLOGLEVEL(UNIT_NAME)  mvLogLevel_ ## UNIT_NAME
+//#define  MVLOGLEVEL(UNIT_NAME) _MVLOGLEVEL(UNIT_NAME)
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
-#define ANSI_COLOR_WHITE   "\x1b[37m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+//#define ANSI_COLOR_RED     "\x1b[31m"
+//#define ANSI_COLOR_GREEN   "\x1b[32m"
+//#define ANSI_COLOR_YELLOW  "\x1b[33m"
+//#define ANSI_COLOR_BLUE    "\x1b[34m"
+//#define ANSI_COLOR_MAGENTA "\x1b[35m"
+//#define ANSI_COLOR_CYAN    "\x1b[36m"
+//#define ANSI_COLOR_WHITE   "\x1b[37m"
+//#define ANSI_COLOR_RESET   "\x1b[0m"
 
-#ifndef MVLOG_DEBUG_COLOR
-#define MVLOG_DEBUG_COLOR ANSI_COLOR_WHITE
-#endif
+//#ifndef MVLOG_DEBUG_COLOR
+//#define MVLOG_DEBUG_COLOR ANSI_COLOR_WHITE
+//#endif
 
-#ifndef MVLOG_INFO_COLOR
-#define MVLOG_INFO_COLOR ANSI_COLOR_CYAN
-#endif
+//#ifndef MVLOG_INFO_COLOR
+//#define MVLOG_INFO_COLOR ANSI_COLOR_CYAN
+//#endif
 
-#ifndef MVLOG_WARN_COLOR
-#define MVLOG_WARN_COLOR ANSI_COLOR_YELLOW
-#endif
+//#ifndef MVLOG_WARN_COLOR
+//#define MVLOG_WARN_COLOR ANSI_COLOR_YELLOW
+//#endif
 
-#ifndef MVLOG_ERROR_COLOR
-#define MVLOG_ERROR_COLOR ANSI_COLOR_MAGENTA
-#endif
+//#ifndef MVLOG_ERROR_COLOR
+//#define MVLOG_ERROR_COLOR ANSI_COLOR_MAGENTA
+//#endif
 
-#ifndef MVLOG_FATAL_COLOR
-#define MVLOG_FATAL_COLOR ANSI_COLOR_RED
-#endif
+//#ifndef MVLOG_FATAL_COLOR
+//#define MVLOG_FATAL_COLOR ANSI_COLOR_RED
+//#endif
 
 typedef enum mvLog_t{
     MVLOG_DEBUG = 0,
@@ -94,28 +94,29 @@ typedef enum mvLog_t{
     MVLOG_LAST,
 } mvLog_t;
 
-#ifdef __shave__
-__attribute__((section(".laststage")))
-#endif
-static const char mvLogHeader[MVLOG_LAST][30] =
-{
-    MVLOG_DEBUG_COLOR "D:",
-    MVLOG_INFO_COLOR  "I:",
-    MVLOG_WARN_COLOR  "W:",
-    MVLOG_ERROR_COLOR "E:",
-    MVLOG_FATAL_COLOR "F:"
-};
+//#ifdef __shave__
+//__attribute__((section(".laststage")))
+//#endif
+//static const char mvLogHeader[MVLOG_LAST][30] =
+//{
+//    MVLOG_DEBUG_COLOR "D:",
+//    MVLOG_INFO_COLOR  "I:",
+//    MVLOG_WARN_COLOR  "W:",
+//    MVLOG_ERROR_COLOR "E:",
+//    MVLOG_FATAL_COLOR "F:"
+//};
 
 // #ifdef __shave__
 // __attribute__((section(".laststage")))
 // #endif
-unsigned int __attribute__ ((weak)) MVLOGLEVEL(MVLOG_UNIT_NAME) = MVLOG_INFO;
+//unsigned int __attribute__ ((weak)) MVLOGLEVEL(MVLOG_UNIT_NAME) = MVLOG_INFO;
 
 // #ifdef __shave__
 // __attribute__((section(".laststage")))
 // #endif
-static unsigned int MVLOGLEVEL(default) = MVLOG_INFO;
+//static unsigned int MVLOGLEVEL(default) = MVLOG_INFO;
 
+/***
 #ifdef __shave__
 __attribute__((section(".laststage")))
 #endif
@@ -162,14 +163,21 @@ logprintf(enum mvLog_t lvl, const char * func, const int line,
     va_end (args);
     return 0;
 }
+*/
 
-#define mvLog(lvl, format, ...)                                 \
-    logprintf(lvl, __func__, __LINE__, format, ##__VA_ARGS__)
+void logmvnc(enum mvLog_t level, const char* file, int line, const char* func,
+             const char* format, ...)  __attribute__ ((format (printf, 5, 6)));
+
+#define mvLog(level, format, ...) \
+    logmvnc(level, __FILE__, __LINE__, __func__, format, ##__VA_ARGS__)
 
 // Set log level for the current unit. Note that the level must be smaller than the global default
-#define mvLogLevelSet(lvl) if(lvl < MVLOG_LAST){ MVLOGLEVEL(MVLOG_UNIT_NAME) = lvl; }
+//#define mvLogLevelSet(lvl) if(lvl < MVLOG_LAST){ MVLOGLEVEL(MVLOG_UNIT_NAME) = lvl; }
+#define mvLogLevelSet(lvl)
+
 // Set the global log level. Can be used to prevent modules from hiding messages (enable all of them with a single change)
 // This should be an application setting, not a per module one
-#define mvLogDefaultLevelSet(lvl) if(lvl < MVLOG_LAST){ MVLOGLEVEL(default) = lvl; }
+//#define mvLogDefaultLevelSet(lvl) if(lvl < MVLOG_LAST){ MVLOGLEVEL(default) = lvl; }
+#define mvLogDefaultLevelSet(lvl)
 
 #endif

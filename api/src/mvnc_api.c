@@ -1782,10 +1782,10 @@ ncStatus_t ncGlobalGetOption(int option, void *data, unsigned int *dataLength)
         return NC_INVALID_DATA_LENGTH;
     }
     switch (option) {
-    case NC_RW_LOG_LEVEL:
-        *(int *) data = mvLogLevel_ncAPI;
-        *dataLength = sizeof(mvLogLevel_ncAPI);
-        break;
+    //case NC_RW_LOG_LEVEL:
+    //    *(int *) data = mvLogLevel_ncAPI;
+    //    *dataLength = sizeof(mvLogLevel_ncAPI);
+    //    break;
     case NC_RO_API_VERSION:{
             // We sanitize the situation by trying to reset the devices that have been left open
             if (api_version[0] == 0 && strlen(VERSION_NAME) != 0) {
